@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://js.pusher.com/2.1/pusher.min.js"></script>
+    <script src="lib/crafty.js"></script>
+    <script src="src/game.v4.js"></script>
+    <script src="src/comp.v4.js"></script>
+    <script src="src/pusher.v4.js"></script>
+    
+    <!-- Soundcloud Stuff -->
+    <script src="http://connect.soundcloud.com/sdk.js"></script>
+    <script src="src/knockout-2.3.0.js"></script>
+    <script src="src/soundcloud.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        
+        var debug = false;
+        
+        if (debug) {
+            setInterval(function(){gametick()}, 1000);
+        } else {
+            hack.setup();
+            hack.create(6422263);
+        }
+        
+        //-- Window Load
+        window.addEventListener('load', Game.start);
+        
+        $('.newPlayer').click(function() {
+            addNewPlayer("+" + Math.floor(Math.random()*54645645), "Jake");
+            return false;
+        }); 
+        
+        $('.newObs').click(function() {
+            createWorldObject(Math.floor(Math.random()*10), 1);
+            return false;a
+        });
+
+    });
+    </script>
+</head>
+<body>
+
+        <div class="" style="position: relative; height: 100px; width: 384px; padding-left:64px;">
+            <!-- ko foreach: timebar -->
+                <span data-bind="style: {'height': ($data) + 'px', left: (((640 / $parent.timebarSections) * $index()) + 64) + 'px'}, css: ($parent.currentTimebar() == $index()) ? 'highlight' : ''" style="width: 64px; max-height: 100px; background-color: blue; position: absolute; bottom: 0;"></span>
+            <!-- /ko -->
+            <span class="avg" data-bind="style: {'bottom': (timebarAvg()) + 'px', width: (64 * timebarSections) + 'px'}" style="height: 1px; background-color: red; position: absolute; bottom: 0;"></span>
+            
+        </div>
+        
+    <div id="cr-stage" style="width: 384px; float: left;"></div>
+    
+    <a href='' class="newPlayer">Add New Player</a>
+    <a href='' class="newObs">Add World Object</a>
+    
+    <div class="userList">
+        <ul class="ll">
+            <li></li>
+        </ul>
+    </div>
+                    
+</body>
+</html>

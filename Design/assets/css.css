@@ -1,0 +1,97 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
+
+body {
+    background: #101010;
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 1268px;
+    margin: 0px auto 0;
+    padding: 20px;
+    /*background: #292929;*/
+    border-radius:20px;
+}
+
+.gameContainer {
+    width: 768px;
+    float: left;
+    margin-right: 20px;
+}
+
+.rightSide {
+    width: 480px;
+    float: left;
+}
+
+/* Game */
+#game {
+    /*background: #2ecc71;*/
+    width: 100%;
+    min-height: 570px;
+}
+
+.pirateGameLogo {
+    margin-bottom: 30px;
+}
+
+ul.ll {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul .userListLi .userListName {
+    font-size: 40px;
+    letter-spacing: -2px;
+    float: left;
+    color: #FFF;
+    font-weight: 700;
+    line-height: 40px;
+    text-transform: uppercase;
+}
+
+ul .userListLi .userListPowerup {
+    font-size: 32px;
+    float:right;
+    color: #FFF;
+    line-height: 40px;
+    vertical-align: middle;
+    font-weight: 700;
+    display: none;
+}
+
+ul .userListLi .userListCoinage img {
+    vertical-align: middle;    
+}
+
+ul .userListLi .userListCoinage {
+    font-size: 32px;
+    float:right;
+    color: #FFF;
+    line-height: 40px;
+    vertical-align: middle;
+    font-weight: 700;
+}
+
+ul .userListHealth {
+    margin: 15px 0 10px;
+    height: 32px;
+    border-radius: 5px;
+    background: #c0392b;
+}
+
+/* Test */
+ul.testgrid {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.testgrid li {
+    float: left;
+    width: 64px;height: 64px;
+    background: #0043AB;
+}
