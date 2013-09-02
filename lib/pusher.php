@@ -1,8 +1,16 @@
 <?php
+//curts
 DEFINE("PUSHER_KEY", 		"8d6d30d2c32b3a486688");
 DEFINE("PUSHER_SECRET", 	"fb42114a6a9a99bf0896");
 DEFINE("PUSHER_ID", 		"53040");
-DEFINE("PUSHER_CHANNEL", 	"test_channel");
+
+//jons
+/*
+DEFINE("PUSHER_KEY", 		"1e9ea87d454c0d8532ee");
+DEFINE("PUSHER_SECRET", 	"eb5337310123634b642a");
+DEFINE("PUSHER_ID", 		"53218");
+*/
+DEFINE("PUSHER_CHANNEL", 	"private-channel");
 
 
 /* 

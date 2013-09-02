@@ -1,15 +1,15 @@
+<?php 
+$db = new mysqli("localhost", "root", "online", "hackference");
+$db->query("TRUNCATE events");
+$db->query("TRUNCATE hack_users");
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-
     <link rel="stylesheet" type="text/css" href="Design/assets/css.css">
-
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script>
-    $(document).ready(function() {
-        $.post('http://hack.hazan.me/end_game.php');
-    });
-    </script>
 </head>
 <body>
     

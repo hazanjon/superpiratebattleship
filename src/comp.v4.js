@@ -92,7 +92,7 @@ Crafty.c('Health', {
     hitTest: function(data) {
         var player_id = pEntity[data[0].obj._entityName];
         //-- Decreate health
-        $.post('http://hack.hazan.me/webhook.php', {player_id: player_id, type: 'health'});
+        $.post('http://superpiratebattleship.com/webhook.php', {player_id: player_id, type: 'health'});
         updateHealth(player_id, 1);
         //-- Destroy element
         this.destroy();
@@ -122,7 +122,7 @@ Crafty.c('Coins', {
         //-- The player has been hit! Get player var
         var player_id = pEntity[data[0].obj._entityName];
         //-- Decreate health
-        $.post('http://hack.hazan.me/webhook.php', {player_id: player_id, type: 'coin'});
+        $.post('http://superpiratebattleship.com/webhook.php', {player_id: player_id, type: 'coin'});
         updateScore(player_id, 1);
         this.destroy();
     },
@@ -150,7 +150,7 @@ Crafty.c('Powerup', {
         //-- The player has been hit! Get player var
         var player_id = pEntity[data[0].obj._entityName];
         //-- Decreate health
-        $.post('http://hack.hazan.me/webhook.php', {player_id: player_id, type: 'powerup'});
+        $.post('http://superpiratebattleship.com/webhook.php', {player_id: player_id, type: 'powerup'});
         givePowerup(player_id, true);
         this.destroy();
     },

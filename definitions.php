@@ -1,6 +1,6 @@
 <?php 
 DEFINE("PLAYER_THRESHOLD", 2);
-DEFINE("URL", "http://hack.hazan.me/");
+DEFINE("URL", "http://superpiratebattleship.com/");
 
 DEFINE("TWILIO_NUMBER",  "+441708394044");
 DEFINE("TWILIO_SID",  	 "AC196f6c8bd104144fd008d520be25a093");

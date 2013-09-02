@@ -151,7 +151,7 @@ function addNewPlayer(player_id, player_name)
     
     //-- Add List - Sorry for the HTML
     niceName = player_id.replace('+', 'b');
-    $('ul.ll').append('<li class="li_' + niceName + '"><div class="userListLi"><div class="userListName">' + player_name + '</div><div class="userListPowerup"><img src="http://images.wikia.com/mario/images/4/4b/Ice_Flower_Artwork_-_New_Super_Mario_Bros._Wii.png" width="32px" height="32px" style="margin-left: 15px;margin-top:5px"></div><div class="userListCoinage"><img src="http://icons.iconarchive.com/icons/ph03nyx/super-mario/256/Retro-Coin-icon.png" width="32px" style="margin-right: 15px;margin-top:-5px"><span>0</span></div><div style="clear: both"></div></div><div class="userListHealth" style="width: 100%;background: ' + myHealthBar + '"></div></li>');
+    $('ul.ll').append('<li class="li_' + niceName + '"><div class="userListLi"><div class="userListName"><a href="client.php?id=' + encodeURIComponent(player_id) + '" style="color: #fff; text-decoration: none;" target="_blank">' + player_name + '</a></div><div class="userListPowerup"><img src="http://images.wikia.com/mario/images/4/4b/Ice_Flower_Artwork_-_New_Super_Mario_Bros._Wii.png" width="32px" height="32px" style="margin-left: 15px;margin-top:5px"></div><div class="userListCoinage"><img src="http://icons.iconarchive.com/icons/ph03nyx/super-mario/256/Retro-Coin-icon.png" width="32px" style="margin-right: 15px;margin-top:-5px"><span>0</span></div><div style="clear: both"></div></div><div class="userListHealth" style="width: 100%;background: ' + myHealthBar + '"></div></li>');
     
     //-- Run our check for total players
     if (Game.playerCount === objectLength(players))
