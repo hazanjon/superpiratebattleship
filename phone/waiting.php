@@ -2,7 +2,7 @@
 include("../definitions.php");
 
 $db     = new mysqli("localhost", "root", "online", "hackference");
-$number = $_POST['To'];
+$number = $_POST['To'] == TWILIO_NUMBER ? $_POST['From'] : $_POST['To']; // need to cater for people phoning in t00
 $result = $db->query("SELECT name, game_id as game FROM hack_users WHERE number='$number' ORDER BY id DESC LIMIT 1")->fetch_assoc();
 $name   = !empty($result['name']) ? $result['name'] : '';
 $game   = 1;//!empty($result['game']) ? $result['game'] : '';

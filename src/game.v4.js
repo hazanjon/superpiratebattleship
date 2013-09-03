@@ -16,7 +16,7 @@ Game = {
     },
     gameSpeed: 10,
     gameStart: false,
-    playerCount: 1,
+    playerCount: 2,
     startingHealth:5,
     ships: ['ship_blue', 'ship_green', 'ship_yellow', 'ship_red'],
 

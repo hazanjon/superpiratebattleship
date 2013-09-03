@@ -1,7 +1,7 @@
 <?php 
 include("../definitions.php");
 include("../lib/pusher.php");
-$id	    = $_POST['To'];
+$id	    = $_POST['To'] == TWILIO_NUMBER ? $_POST['From'] : $_POST['To']; // need to cater for people phoning in t00
 $digit  = $_POST['Digits'];
 $params = array('id'=>$id, 'button'=>$digit);
 try{
