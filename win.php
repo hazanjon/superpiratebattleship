@@ -1,7 +1,7 @@
 <?php 
-$db = new mysqli("localhost", "root", "online", "hackference");
-$db->query("TRUNCATE events");
-$db->query("TRUNCATE hack_users");
+include("definitions.php");
+//$db->query("TRUNCATE events");
+//$db->query("TRUNCATE players");
 
 ?>
 

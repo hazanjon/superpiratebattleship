@@ -7,7 +7,5 @@ include("definitions.php");
 $number = $_REQUEST['player_id'];
 $pickup = $_REQUEST['type'];
 
-$db = new mysqli("localhost", "root", "online", "hackference");
 $db->query("INSERT INTO events (number, pickup) VALUES ('$number', '$pickup')");
-
 ?>

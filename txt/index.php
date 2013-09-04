@@ -1,15 +1,14 @@
 <?php 
 include("../definitions.php");
 
-$db 	 = new mysqli("localhost", "root", "online", "hackference");
-//$result  = $db->query("SELECT MAX(game_id) as game FROM hack_users WHERE status = 3")->fetch_assoc();
+//$result  = $db->query("SELECT MAX(game_id) as game FROM players WHERE status = 3")->fetch_assoc();
 $game_id = 1;//!empty($result['game']) ? $result['game']+1 : 1;
 $name    = $_POST['Body']; // user name
 $from    = $_POST['To']; // my twilio number
 $number  = $_POST['From']; // users number
-$db->query("INSERT INTO hack_users (number, name, game_id) VALUES ('$number', '$name', '$game_id')");
+$db->query("INSERT INTO players (number, name, game_id) VALUES ('$number', '$name', '$game_id')");
 
-$result  = $db->query("SELECT * FROM hack_users WHERE game_id='$game_id' AND called=0");
+$result  = $db->query("SELECT * FROM players WHERE game_id='$game_id' AND called=0");
 
 /*
 if($result->num_rows <= PLAYER_THRESHOLD) {
@@ -22,7 +21,7 @@ if($result->num_rows <= PLAYER_THRESHOLD) {
 	$twilio  = new Services_Twilio(TWILIO_SID, TWILIO_AUTH, TWILIO_VERSION);
 	
 	// close this game off quick sharp
-	$db->query("UPDATE hack_users SET status=2 WHERE game_id='$game_id' AND number='$number'");
+	$db->query("UPDATE players SET status=2 WHERE game_id='$game_id' AND number='$number'");
 	// loop through the players and give them a ring to start play.
 //	while($row = $result->fetch_assoc()) {
 		try {
@@ -66,7 +65,7 @@ if($result->num_rows >= PLAYER_THRESHOLD) {
 //	$twilio  = new Services_Twilio(TWILIO_SID, TWILIO_AUTH, TWILIO_VERSION);
 	
 	// close this game off quick sharp
-//	$db->query("UPDATE hack_users SET status=2 WHERE game_id='$game_id'");
+//	$db->query("UPDATE players SET status=2 WHERE game_id='$game_id'");
 	// loop through the players and give them a ring to start play.
 	while($row = $result->fetch_assoc()) {
 		if($row['called']==0 && $row['status'] < 2) {

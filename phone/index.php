@@ -1,25 +1,32 @@
 <?php 
-
 include("../definitions.php");
 
-$db 	 = new mysqli("localhost", "root", "online", "hackference");
-$result  = $db->query("SELECT * FROM hack_users")->fetch_assoc();
-$game_id = 1;//!empty($result['game']) ? $result['game']+1 : 1;
-$from    = $_REQUEST['To']; // my twilio number
-$number  = $_REQUEST['From']; // users number
-$name    = 'PLAYER '.($result->num_rows + 1); // give them a name as we can't get it here
-
-if($result->num_rows > PLAYER_THRESHOLD):?>
-	<Response>
-		<Hangup />
-	</Response>
-	
-<?php else: 
-$db->query("INSERT INTO hack_users (number, name, game_id, status) VALUES ('$number', '$name', '$game_id', '2')");
-?>
+if(!empty($_POST['Digits'])) {
+	$digits = $db->real_escape_string($_POST['Digits']);
+	// check this game exists
+	$result = $db->query("SELECT * FROM games WHERE game_id='{$digits}'")->fetch_assoc();
+	if(!empty($result->num_rows)) {
+		// check how many players in this game
+		$players = $db->query("SELECT * FROM players WHERE game_id='{$digits}'")->fetch_assoc();
+		if(!empty($players->num_rows) && $players->num_rows > PLAYER_THRESHOLD) {
+			// too many players deny
+			$response = "<Say>There are too many people in this game already</Say><Hangup />";
+		}
+		else {
+			// add to game
+			$number   = $_POST['To'] == TWILIO_NUMBER ? $_POST['From'] : $_POST['To']; // this needs to be functionised!
+			$name     = 'PLAYER '.($players->num_rows + 1); // give them a name as we can't get it here
+			$response = "<Say>Thankyou for joining superpiratebattleships</Say><Say>You are $name</Say><Redirect method=\"POST\">waiting.php</Redirect>";
+			$db->query("INSERT INTO players (number, name, game_id, status) VALUES ('{$number}', '{$name}', '{$digits}', '2')");
+		}
+	}
+	else {
+		$response = "<Say>This game was not found, sorry!</Say><Hangup />";
+	}
+}
+else {
+	$response = "<Gather method=\"POST\" action=\"\" numDigits=\"4\" timeout=\"60\"><Say loop=\"10\">Please enter your four digit code</Say></Gather>";
+}
 <Response>
-	<Say>Thankyou for joining superpiratebattleships</Say>
-	<Say>You are <?php echo $name;?></Say>
-	<Redirect method="POST">waiting.php</Redirect>
+	<?php echo $response;?>
 </Response>
-<?php endif;?>

@@ -95,3 +95,39 @@ ul.testgrid li {
     width: 64px;height: 64px;
     background: #0043AB;
 }
+
+.overlay {
+	height: 800px;
+	position: absolute;
+	width: 100%;
+	z-index: 1000;
+}
+
+.overlayBg {
+    background-color: black;
+    height: 100%;
+    opacity: 0.5;
+    width: 100%;
+    z-index: 1001;	
+}
+
+.gameOptions {
+	color: white;
+	left: 30%;
+	position: absolute;
+	top: 25%;
+}
+
+.hidden {
+	display: none;
+}
+
+.callIn {
+	color: white;
+	text-align: center;
+}
+
+.callIn p {
+    font-size: 14px;
+    margin-bottom: -15px;
+}

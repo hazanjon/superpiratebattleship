@@ -1,14 +1,13 @@
 <?php
 include("../definitions.php");
 
-$db     = new mysqli("localhost", "root", "online", "hackference");
 $number = $_POST['To'] == TWILIO_NUMBER ? $_POST['From'] : $_POST['To']; // need to cater for people phoning in t00
-$result = $db->query("SELECT name, game_id as game FROM hack_users WHERE number='$number' ORDER BY id DESC LIMIT 1")->fetch_assoc();
+$result = $db->query("SELECT name, game_id as game FROM players WHERE number='$number' ORDER BY id DESC LIMIT 1")->fetch_assoc();
 $name   = !empty($result['name']) ? $result['name'] : '';
 $game   = 1;//!empty($result['game']) ? $result['game'] : '';
 
-$db->query("UPDATE hack_users SET status=3 WHERE number='$number' AND game_id='$game'");
-$result = $db->query("SELECT COUNT(*) as users FROM hack_users WHERE status=3 AND game_id='$game'")->fetch_assoc();
+$db->query("UPDATE players SET status=3 WHERE number='$number' AND game_id='$game'");
+$result = $db->query("SELECT COUNT(*) as users FROM players WHERE status=3 AND game_id='$game'")->fetch_assoc();
 $count  = !empty($result['users']) ? $result['users'] : 1;
 $wait   = PLAYER_THRESHOLD - $count;
 

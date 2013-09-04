@@ -1,7 +1,7 @@
 <?php 
 include("../definitions.php");
 include("../lib/pusher.php");
-$id	    = $_POST['To'] == TWILIO_NUMBER ? $_POST['From'] : $_POST['To']; // need to cater for people phoning in t00
+$id	    = $_POST['To'] == TWILIO_NUMBER ? $_POST['From'] : $_POST['To']; // need to cater for people phoning in too
 $digit  = $_POST['Digits'];
 $params = array('id'=>$id, 'button'=>$digit);
 try{
@@ -12,7 +12,6 @@ catch(Exception $e) {
 	error_log("Pusher Exception : {$id} - {$digit}");
 }
 
-$db     = new mysqli("localhost", "root", "online", "hackference");
 $result = $db->query("SELECT pickup FROM events WHERE pickup='end' LIMIT 1")->fetch_assoc();
 
 if(!empty($result['pickup'])) {

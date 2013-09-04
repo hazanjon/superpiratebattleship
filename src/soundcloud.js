@@ -1,3 +1,98 @@
+var canvas;
+var EqCanvas = function(id) {
+	this.el 	    = document.getElementById(id);
+	this.context    = this.el.getContext("2d");
+	this.gradient   = null;
+	this.counter    = 0;
+	this.sections   = 10;
+	this.threshold	= 150;
+	this.width  	= 30;
+	this.data       = [];	
+	
+	this.fillRect = function() {
+		for(var i=0; i<this.sections; i++) {
+			var value = this.data[i];
+			if(value > this.threshold) {
+				var rand = Math.floor(Math.random() * 100);
+				if(rand <= 10) {		rand = 0; 	}
+				else if(rand <= 30) {	rand = 1;	}
+				else if(rand <= 50) { 	rand = 2;	}
+				else{					rand = 3;	}
+				createWorldObject(i, rand);
+				
+				this.clear();
+				this.counter++;
+				if(this.counter == this.sections) {
+					this.counter = 0;
+				}
+				break;
+				this.data[i] = 0;
+				this.context.fillStyle = 'black';
+			}
+			else {
+				this.context.fillStyle = 'blue';
+			}
+			
+			this.context.fillRect(i*this.width, 0, this.width-1, value);
+		}
+	};
+	
+	this.draw = function(data) {
+		for(var i=0; i<data.length; i++) {
+			var index = i % this.sections;
+			index += this.counter;
+			if(index >= this.sections) {
+				index -= this.sections;
+			}
+			var value = data[i] * 4;
+			this.data[index] += value * value;
+		}
+		this.fillRect();
+	};
+
+	this.emptyData = function() {
+		for(var i=0; i<this.sections; i++) {
+			this.data[i] = 0;
+		}
+	};
+	
+	this.clear = function() {
+		this.emptyData();
+		this.el.width = this.el.width;
+	};
+	
+	this.emptyData();
+	return this;
+};
+
+function createEqCanvas() {
+	canvas = new EqCanvas("eq");
+	
+	SC.initialize({
+	  client_id: '332b52d99a4f6a843cdc4d92dc77d4d9'
+	});
+	
+	SC.stream("/tracks/56526690", {
+			autoPlay: false,
+			autoLoad: true,
+			useEQData: true,
+			onplay: function(){
+			},
+			onload: function(){
+				console.log('ready');
+			},
+			whileplaying: function(){
+				canvas.draw(this.eqData);
+			}
+		},
+		function(sound) {
+			sound.play();
+		}
+	);
+}
+
+
+/*
 SC.initialize({
   client_id: '332b52d99a4f6a843cdc4d92dc77d4d9'
 });
@@ -178,24 +273,12 @@ hack.generateBlocks = function(timebar, timebarAvg){
 		timebar2[i] = thisval;
 	}
 	
-	//console.log(timebarAvg, thisavg, timebar)
-	//@todo use the avgdiff in calcs
-	//[11, 16, 30, 28, 104, 31, 0, 0, 0, 0, 0]
-	//var minval = timebar.min();
-	
-	//var coinrow = timebar.indexOf(minval);
-	//delete timebar[timebar.indexOf(minval)];
-	
-	/*minval = timebar.min();
-	var coinrow = timebar.indexOf(minval);
-	delete timebar[timebar.indexOf(minval)];*/
-	
 	function compareNumbers(a, b) {
 	  	return a - b;
 	}
 	
 	timebar2.sort(compareNumbers);
-	console.log(timebar2);
+//	console.log(timebar2);
 	
 	var hprow = timebar.indexOf(timebar2[0]);
 	var coinrow = timebar.indexOf(timebar2[1]);
@@ -203,7 +286,7 @@ hack.generateBlocks = function(timebar, timebarAvg){
 	var mountain2 = timebar.indexOf(timebar2[hack.vm.timebarSections - 2]);
 	var mountain3 = timebar.indexOf(timebar2[hack.vm.timebarSections - 3]);
 	
-	console.log(hprow, coinrow);
+//console.log(hprow, coinrow);
 	
 	if(timebar[hprow] < (timebarAvg * 0.6) && Math.random()  > 0.8){
 		//console.log('power');
@@ -227,72 +310,12 @@ hack.generateBlocks = function(timebar, timebarAvg){
 		createWorldObject(mountain3, 7);//bad
 	//createWorldObject(mountain3, 8);//bad
 	
-	/*
-	for(var i = 0; i < hack.vm.timebarSections; i++){
-		if(timebar[i] > 0){
-			if(thisavg >= (timebarAvg * 1.4)){ //Avg way above
-					if(timebar[i] < timebarAvg){
-						createWorldObject(i, 8);//8 is good
-						//console.log('0create nice coin',i);
-						self.rec[0] += 1;
-					}
-					if(timebar[i] > (thisavg * 1.3)){ //50% greater than avg
-						createWorldObject(i, 1);//bad
-						//console.log('1create nasty obstruction',i);
-						self.rec[1] += 1;
-					}
-			}else if(thisavg >= timebarAvg){ //Avg above
-					if(timebar[i] < timebarAvg * 0.6){ // 20% down
-						createWorldObject(i, 8);//8 is good
-						//console.log('2create coin',i);	
-						self.rec[2] += 1;
-					}
-					if(timebar[i] > (thisavg * 1.5)){ //50% greater than avg
-						createWorldObject(i, 1);//bad
-						//console.log('3create obstruction',i);
-						self.rec[3] += 1;
-					}
-			}else if(thisavg <= timebarAvg){ //Avg below
-					if(timebar[i] < thisavg * 0.5){ // 20% down
-						//console.log('4create coin',i, timebar[i], thisavg * 0.5);
-						createWorldObject(i, 8);//8 is good
-						self.rec[4] += 1;
-					}
-					if(timebar[i] > (thisavg * 1.5)){ //50% greater than avg
-						//console.log('5create obstruction',i);
-						createWorldObject(i, 1);//bad
-						self.rec[5] += 1;
-					}
-			}else if((thisavg * 1.5) <= timebarAvg){ //Avg  way below
-					if(timebar[i] < thisavg * 0.8){ // 20% down
-						createWorldObject(i, 8);//8 is good
-						//console.log('6create coin',i);	
-						self.rec[6] += 1;
-					}
-					if(timebar[i] > (thisavg * 1.8)){ //50% greater than avg
-						createWorldObject(i, 1);//bad
-						//console.log('7create nasty obstruction',i);
-						self.rec[7] += 1;
-					}
-			}else{
-					if(timebar[i] < thisavg * 0.8){ // 20% down
-						createWorldObject(i, 8);//8 is good
-						//console.log('6create coin',i);	
-						self.rec[6] += 1;
-					}
-					if(timebar[i] > (thisavg * 1.8)){ //50% greater than avg
-						createWorldObject(i, 1);//bad
-						//console.log('7create nasty obstruction',i);
-						self.rec[7] += 1;
-					}
-			}
-		}
-	}*/
-		
 	//use the actual time avg incase the function is behind
 	hack.vm.timebarAvg((hack.vm.timebarAvg() + thisavg) / 2);
 	//hack.vm.timebar(timebar);
-	console.log('////////////////////////////END ROW/////////////////////////////////////');
+//	console.log('////////////////////////////END ROW/////////////////////////////////////');
 	movePlayers();
 	Crafty.trigger('gametick');
 }
+
+*/

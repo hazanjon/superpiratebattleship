@@ -1,49 +1,39 @@
-var pusher = new Pusher('8d6d30d2c32b3a486688');
-var channel = pusher.subscribe('test_channel');
+var pusher = new Pusher('8d6d30d2c32b3a486688', { authEndpoint: '/pusher_auth.php' });
+
+var channel = pusher.subscribe('private-channel');
 
 //-- Events
 
 // New User Event
 channel.bind("newUser_event", function(data) {
-   console.log("Pusher newUser: " + data.name);
-   addNewPlayer(data.id, data.name);
-   if (Game.playerCount == 4) {gameStart()};
+    console.log(data);
+    //console.log("Pusher newUser: " + data.name);
+    addNewPlayer(data.id, data.name);
 });
 
 // Key Press
 channel.bind("keyPress_event", function(data) {
     console.log("Pusher keyPress: " + data.id + " " + data.button);
-    movePlayer(data.id, data.button);
+    movePlayersData(data.id, data.button);
+});
+channel.bind("client-ev", function(data) {
+    console.log("Pusher keyPress: " + data.id + " " + data.button);
+    movePlayersData(data.id, data.button);
 });
 
-//-- RANDOMS
-//var myVar = setInterval(function(){randomTest("0.6")}, 1000);
-var myVar2 = setInterval(function(){gameSpeedStuff()}, 7000);
+// Kill Userh
+channel.bind("killUser_event", function(data) {
+    console.log("Pusher Kill User: " + data.id);
+    killPlayer(data.id);
+});
+
 
 function randomTest(justHowRandom)
 {
-    if (objectLength(players) > 0)
+    if (objectLength(players) >= Game.playerCount)
     {
         if (Math.random() < justHowRandom) {
-            createWorldObject(Math.floor(Math.random()*10), Math.floor(Math.random()*10));
+            createWorldObject(Math.floor(Math.random()*10), Math.floor(Math.random()*4));
         }
     }
-}
-
-function gameSpeedStuff()
-{
-    if (objectLength(players) > 0)
-    {
-        if (Game.gameSpeed < 10)
-        {
-            Game.gameSpeed = Game.gameSpeed + 1;
-            console.log("Game Just got faster! " + (15 - Game.gameSpeed));
-        }
-    }
-}
-
-function gameStart()
-{
-    Game.gameStart = true;
-    console.log("Game Start!");
 }
