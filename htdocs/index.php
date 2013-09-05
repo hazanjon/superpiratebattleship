@@ -28,6 +28,7 @@ if($_GET['newGame']) {
     
     <!-- Soundcloud Stuff -->
     <script src="http://connect.soundcloud.com/sdk.js"></script>
+    <script src="/res/js/knockout-2.3.0.js"></script>
     <script src="/res/js/soundcloud.js"></script>
     <script src="/res/js/main.js"></script>
 </head>
@@ -39,13 +40,11 @@ if($_GET['newGame']) {
 			<input type="button" id="gameCreator" value="Yes" />
 		</div>
 	</div>
-    <div class="" style="position: relative; height: 100px; width: 640px; margin-left: 107px; margin-bottom: -20px">
-		<canvas id="eq" style="width:100%; height:100%; border:1px solid black;"></canvas>
-    </div>
     
     <div class="container">
         
         <div class="gameContainer">
+            <canvas id="eq" style="width: 640px; height: 100px; border: none; margin-left: 64px;"></canvas>
             <div id="cr-stage" style="width: 384px; float: left;"></div>
         </div>
         

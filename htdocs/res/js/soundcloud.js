@@ -1,4 +1,9 @@
 var canvas;
+
+SC.initialize({
+  client_id: '332b52d99a4f6a843cdc4d92dc77d4d9'
+});
+
 var EqCanvas = function(id) {
 	this.el 	    = document.getElementById(id);
 	this.context    = this.el.getContext("2d");
@@ -7,7 +12,7 @@ var EqCanvas = function(id) {
 	this.sections   = 10;
 	this.threshold	= 150;
 	this.width  	= 30;
-	this.data       = [];	
+	this.data       = [];
 	
 	this.fire = function(i, rand) {
 		createWorldObject(i, rand);
@@ -75,10 +80,6 @@ var EqCanvas = function(id) {
 function createEqCanvas() {
 	canvas = new EqCanvas("eq");
 	
-	SC.initialize({
-	  client_id: '332b52d99a4f6a843cdc4d92dc77d4d9'
-	});
-	
 	SC.stream("/tracks/56526690", {
 			autoPlay: false,
 			autoLoad: true,
@@ -89,20 +90,17 @@ function createEqCanvas() {
 				console.log('ready');
 			},
 			whileplaying: function(){
-				canvas.draw(this.eqData);
+				//canvas.draw(this.eqData);
+
+				hack.calcEq(this.eqData, this.position);
 			}
 		},
 		function(sound) {
 			sound.play();
+			hack.vm.sound = sound;
 		}
 	);
 }
-
-
-/*
-SC.initialize({
-  client_id: '332b52d99a4f6a843cdc4d92dc77d4d9'
-});
 
 Array.prototype.max = function() {
   return Math.max.apply(null, this);
@@ -140,12 +138,17 @@ viewModel = function(){
 		self.timebar.push(temp);
 	}
 	
-	self.currentTimebar = ko.observable(0);
+	self.currentTimebarPos = ko.observable(0);
+	self.currentTimebarValue = ko.observable(0);
 	
 	self.rec = [0,0,0,0,0,0,0,0,0,0,0];
 }
 
 hack.vm = new viewModel();
+
+hack.relativePos = function(position){
+	return (position % hack.vm.timebarLength) / (hack.vm.timebarLength / hack.vm.timebarSections);
+}
 
 hack.calcEq = function(eq, position){
 	//console.log('#################Start CALCS############');
@@ -154,14 +157,14 @@ hack.calcEq = function(eq, position){
 		
 		var timebar = hack.vm.timebar;
 		
-		var pos = Math.floor((position % hack.vm.timebarLength) / (hack.vm.timebarLength / hack.vm.timebarSections));
+		var pos = Math.floor(hack.relativePos(position));
 
 		var dir = Math.floor(position / hack.vm.timebarLength) % 2;
 		
-		hack.vm.currentTimebar(pos);
-		//console.log(dir);
 		if(hack.vm.timebarDir() != dir){
 			hack.vm.timebarDir(dir);
+			canvas.clear();
+
 			var temptimebar = [];
 			//clone timebar so the calcs can run async and zero out timebar
 			for(var i = 0; i < hack.vm.timebarSections; i++){
@@ -169,8 +172,9 @@ hack.calcEq = function(eq, position){
 				timebar[i](0);
 			}
 			
-			if(hack.vm.sound.position >= 8000) //Dont generate before 10 secs
+			if(hack.vm.sound.position >= 8000){ //Dont generate before 10 secs
 				hack.generateBlocks(temptimebar, hack.vm.timebarAvg());
+			}
 		}
 		
 		if(eq && eq.left && eq.left.length){
@@ -183,22 +187,52 @@ hack.calcEq = function(eq, position){
 				//console.log('j', j);
 					var channel = (i * segsize) + j;
 					var pair = (parseFloat(eq.left[channel]) + parseFloat(eq.right[channel]));
-					total += pair;
+					//total += pair;
 					totalWave += pair;
 				}
 				
 				
-				output.push(total/segsize);
+				//output.push(total/segsize);
 			}
 		}
 		
-		hack.vm.eqDivided(output);
-		if(dir){
-			timebar[hack.vm.timebarSections - (pos + 1)](totalWave); //Total wave max should be 512
-		}else{
-			timebar[pos](totalWave); //Total wave max should be 512
-		}
-		//console.log('end of equp, mutate');
+		//hack.vm.eqDivided(output);
+		var realpos = pos;
+		if(dir)
+			realpos = hack.vm.timebarSections - (pos + 1);
+
+		timebar[realpos](totalWave); //Total wave max should be 512
+
+
+		canvas.context.fillStyle = 'blue';
+		canvas.context.fillRect(realpos*canvas.width, 150-totalWave, canvas.width - 1, totalWave);
+
+			canvas.context.beginPath();
+			var lastpos = hack.relativePos(hack.vm.currentTimebarPos());
+			var currentpos = hack.relativePos(position);
+			
+			if(dir){
+				lastpos = hack.vm.timebarSections - lastpos;
+				currentpos = hack.vm.timebarSections - currentpos;
+			}
+
+			if(pos == 0){
+				if(dir){
+					lastpos = hack.vm.timebarSections + 1;
+				}else{
+					lastpos = hack.vm.timebarSections;
+				}
+			}
+
+			canvas.context.moveTo(lastpos*canvas.width, 150-hack.vm.currentTimebarValue());
+			canvas.context.lineTo(currentpos*canvas.width, 150-totalWave);
+
+			canvas.context.strokeStyle = '#ff0000';
+			canvas.context.stroke();
+		//console.log(canvas.height);
+		hack.vm.currentTimebarPos(position);
+		hack.vm.currentTimebarValue(totalWave);
+
 };
 
 hack.setup = function(){
@@ -325,4 +359,3 @@ hack.generateBlocks = function(timebar, timebarAvg){
 	Crafty.trigger('gametick');
 }
 
-*/

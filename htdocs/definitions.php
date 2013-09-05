@@ -15,6 +15,20 @@ DEFINE("TWILIO_SID",  	 "ACd049c35eea3ca0fbb84a8e9e74d9f57f");
 DEFINE("TWILIO_AUTH", 	 "af92cb98c9a89fff692f63f8ceafc6a7");
 DEFINE("TWILIO_VERSION", "2010-04-01");
 //*/
+
+//curts
+DEFINE("PUSHER_KEY", 		"8d6d30d2c32b3a486688");
+DEFINE("PUSHER_SECRET", 	"fb42114a6a9a99bf0896");
+DEFINE("PUSHER_ID", 		"53040");
+
+//jons
+/*
+DEFINE("PUSHER_KEY", 		"1e9ea87d454c0d8532ee");
+DEFINE("PUSHER_SECRET", 	"eb5337310123634b642a");
+DEFINE("PUSHER_ID", 		"53218");
+*/
+
+DEFINE("PUSHER_CHANNEL", 	"private-channel");
 include("../vendor/autoload.php");
 include("gameController.php");
 $game = new gameController($db);
