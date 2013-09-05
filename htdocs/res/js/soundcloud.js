@@ -211,17 +211,17 @@ hack.calcEq = function(eq, position){
 			var lastpos = hack.relativePos(hack.vm.currentTimebarPos());
 			var currentpos = hack.relativePos(position);
 			
-			if(dir){
-				lastpos = hack.vm.timebarSections - lastpos;
-				currentpos = hack.vm.timebarSections - currentpos;
-			}
+			
 
-			if(pos == 0){
-				if(dir){
+			if(dir){
+				if(lastpos > currentpos){
 					lastpos = hack.vm.timebarSections + 1;
 				}else{
-					lastpos = hack.vm.timebarSections;
+					lastpos = hack.vm.timebarSections - lastpos;
 				}
+				currentpos = hack.vm.timebarSections - currentpos;
+			}else if(lastpos > currentpos){
+				lastpos = 0;
 			}
 
 			canvas.context.moveTo(lastpos*canvas.width, 150-hack.vm.currentTimebarValue());
