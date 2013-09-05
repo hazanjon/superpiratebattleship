@@ -233,11 +233,7 @@ function gameStart(debug)
         setInterval(function(){gametick(debug)}, 1000);
         setInterval(function(){randomTest("0.6")}, 1000);
     } else {
-    	createEqCanvas();
-    	setInterval(function(){
-    		Crafty.trigger('gametick');
-    	}, 1000);
-    	
+    	createEqCanvas();   	
     	/*
         hack.setup();
         hack.create(56526690);

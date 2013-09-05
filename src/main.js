@@ -5,6 +5,7 @@ function gameCreated(data) {
 		$("#gameCode").text(data.game_id);
 		$(".callIn").show();
 		$(".overlay").fadeOut("slow", function(){ $(this).remove() });
+		channel = subscribeChannel(data.game_id);
 	}
 }
 

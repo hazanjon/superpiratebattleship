@@ -15,5 +15,8 @@ DEFINE("TWILIO_SID",  	 "ACd049c35eea3ca0fbb84a8e9e74d9f57f");
 DEFINE("TWILIO_AUTH", 	 "af92cb98c9a89fff692f63f8ceafc6a7");
 DEFINE("TWILIO_VERSION", "2010-04-01");
 //*/
+include("lib/pusher.php");
+include("gameController.php");
+$game = new gameController($db);
 
 ?>

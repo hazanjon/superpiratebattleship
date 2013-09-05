@@ -34,39 +34,6 @@ Crafty.c('Garbage' , {
       },
 });
 
-Crafty.c('BaseObject', {
-	init: function() {
-		this.requires('Grid, Color, Tween, Collision')
-			.onHit('Garbage', this.garbageCollector);
-	},
-	garbageCollector: function() {
-		this.destroy();
-	}
-});
-
-//-- Islands
-Crafty.c('Island', {
-  init: function() {
-    this.requires('BaseObject, Actor, island2')
-        .color('rgb(211, 84, 0)')
-        .bind('gametick', function(){
-            this.y += Game.map_grid.tile.height;
-        })
-        .onHit('Player', this.hitTest)
-        .onHit('ShootRight', this.cannon);
-    },
-    hitTest: function(data) {
-        var player_id = pEntity[data[0].obj._entityName];
-        //-- Decreate health
-        updateHealth(player_id, -1);
-        //-- Destroy element
-        this.destroy();
-        
-    },
-    cannon: function(data) {
-        this.destroy();
-    }
-});
 
 Crafty.c('Player', {
     init: function() {
@@ -90,13 +57,51 @@ Crafty.c('Player', {
     }
 });
 
+
+Crafty.c('BaseObject', {
+	init: function() {
+		this.requires('Grid, Color, Tween, Collision')
+			.onHit('Garbage', this.garbageCollector);
+	},
+	garbageCollector: function() {
+		this.destroy();
+	}
+});
+
+Crafty.c('GameTickObject', {
+	init: function() {
+		this.requires('BaseObject')
+			.bind('gametick', function() {
+				this.y += Game.map_grid.tile.height;
+			});
+	}
+});
+
+//-- Islands
+Crafty.c('Island', {
+  init: function() {
+    this.requires('GameTickObject, Actor, island2')
+        .color('rgb(211, 84, 0)')
+        .onHit('Player', this.hitTest)
+        .onHit('ShootRight', this.cannon);
+    },
+    hitTest: function(data) {
+        var player_id = pEntity[data[0].obj._entityName];
+        //-- Decreate health
+        updateHealth(player_id, -1);
+        //-- Destroy element
+        this.destroy();
+        
+    },
+    cannon: function(data) {
+        this.destroy();
+    }
+});
+
 Crafty.c('Health', {
   init: function() {
-    this.requires('BaseObject, Actor, heart')
+    this.requires('GameTickObject, Actor, heart')
         .color('rgb(0, 67, 171)')
-        .bind('gametick', function(){
-            this.y += Game.map_grid.tile.height;
-        })
         .onHit('ShootRight', this.cannon)
         .onHit('Player', this.hitTest);
     },
@@ -115,11 +120,8 @@ Crafty.c('Health', {
 
 Crafty.c('Coins', {
   init: function() {
-    this.requires('BaseObject, Actor, coin')
+    this.requires('GameTickObject, Actor, coin')
         .color('rgb(0, 67, 171)')
-        .bind('gametick', function(){
-            this.y += Game.map_grid.tile.height;
-        })
         .onHit('ShootRight', this.cannon)
         .onHit('Player', this.hitTest);
     },
@@ -138,11 +140,8 @@ Crafty.c('Coins', {
 
 Crafty.c('Powerup', {
   init: function() {
-    this.requires('BaseObject, Actor, star')
+    this.requires('GameTickObject, Actor, star')
         .color('rgb(0, 67, 171)')
-        .bind('gametick', function(){
-            this.y += Game.map_grid.tile.height;
-        })
         .onHit('Player', this.hitTest);
     },
     hitTest: function(data) {
@@ -155,33 +154,32 @@ Crafty.c('Powerup', {
     }
 });
 
+Crafty.c('BaseCannonball', {
+	init: function() {
+		this.requires('BaseObject, Actor, cannonball')
+			.color('rgb(0, 67, 171')
+			.onHit('Player', this.hitTest)
+			.onHit('GameTickObject', this.hitTest);
+	},
+    hitTest: function(data) {
+    	var player_id = pEntity[data[0].obj._entityName];
+    	//-- Decreate health
+    	console.log(player_id);
+    	updateHealth(player_id, 2);
+        this.destroy();
+     }
+});
+
 Crafty.c('ShootRight', {
   init: function() {
-    this.requires('BaseObject, Actor, cannonball')
-        .color('rgb(0, 67, 171)')
+    this.requires('BaseCannonball')
         .tween({x: this.x  + 1000, y: this.y}, 100)
-        .onHit('Player', this.hitTest);
-    },
-    hitTest: function(data) {
-       var player_id = pEntity[data[0].obj._entityName];
-        //-- Decreate health
-        updateHealth(player_id, 2);
-        this.destroy();
     }
 });
 
 Crafty.c('ShootLeft', {
   init: function() {
-    this.requires('BaseObject, Actor, cannonball')
-        .color('rgb(0, 67, 171)')
+    this.requires('BaseCannonball')
         .tween({x: this.x  - 1000, y: this.y}, 100)
-        .onHit('Player', this.hitTest);
-    },
-    hitTest: function(data) {
-       var player_id = pEntity[data[0].obj._entityName];
-        //-- Decrease health
-        console.log(player_id);
-        updateHealth(player_id, 2);
-        this.destroy();
     }
 });

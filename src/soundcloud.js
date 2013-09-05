@@ -9,6 +9,14 @@ var EqCanvas = function(id) {
 	this.width  	= 30;
 	this.data       = [];	
 	
+	this.fire = function(i, rand) {
+		createWorldObject(i, rand);
+		movePlayers();
+		Crafty.trigger('gametick');
+		this.clear();
+		this.counter++;
+	}
+	
 	this.fillRect = function() {
 		for(var i=0; i<this.sections; i++) {
 			var value = this.data[i];
@@ -18,10 +26,9 @@ var EqCanvas = function(id) {
 				else if(rand <= 30) {	rand = 1;	}
 				else if(rand <= 50) { 	rand = 2;	}
 				else{					rand = 3;	}
-				createWorldObject(i, rand);
 				
-				this.clear();
-				this.counter++;
+				
+				this.fire(i, rand);
 				if(this.counter == this.sections) {
 					this.counter = 0;
 				}
