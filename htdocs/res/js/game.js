@@ -31,7 +31,7 @@ Game = {
         return this.map_grid.height * this.map_grid.tile.height;
     },
     
-    start: function() {
+    init: function() {
         if(!Game.gameStart){
             Crafty.init(Game.width(), Game.height());
             Crafty.background('rgb(0, 67, 171)');
@@ -58,6 +58,16 @@ Game = {
             this.channel = subscribeChannel(data.game_id);
             Crafty.scene("Game");
         }
+    },
+    
+    begin: function(debug) {
+        console.log("Game Started");
+        if (debug) {
+             setInterval(function(){Game.tick(debug)}, 1000);
+             setInterval(function(){randomTest("0.6")}, 1000);
+         } else {
+             createEqCanvas();
+         }
     },
 
     tick: function(debug) {
@@ -101,7 +111,7 @@ Game = {
         //-- Run our check for total players
         if (Game.playerCount === objectLength(players)) {
             //-- Run Game Start
-            gameStart(debug);
+            this.begin(debug);
         }
     },
     
@@ -141,23 +151,10 @@ Game = {
     
 }
 
-//-- Just for testing for the time being
-
 function objectLength(obj) 
 {
     //-- Length of our arrays
     var result = 0;
     for(var prop in obj) {if (obj.hasOwnProperty(prop)) {result++;}}
     return result;
-}
-
-function gameStart(debug)
-{
-    console.log("Game Started");
-   if (debug) {
-        setInterval(function(){Game.tick(debug)}, 1000);
-        setInterval(function(){randomTest("0.6")}, 1000);
-    } else {
-        createEqCanvas();
-    }
 }

@@ -2,7 +2,7 @@
 $(document).ready(function() {
     var debug = false;
     //-- Window Load
-    window.addEventListener('load', Game.start);
+    window.addEventListener('load', Game.init);
 	//Game.start();        
     $('.newPlayer').click(function() {
         Game.addNewPlayer("+" + Math.floor(Math.random()*54645645), "Jake");
