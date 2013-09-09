@@ -1,101 +1,119 @@
 var canvas;
 var EqCanvas = function(id) {
-	this.el 	    = document.getElementById(id);
-	this.context    = this.el.getContext("2d");
-	this.gradient   = null;
-	this.counter    = 0;
-	this.sections   = 10;
-	this.threshold	= 150;
-	this.width  	= 30;
-	this.data       = [];	
-	
-	this.fire = function(i, rand) {
-		createWorldObject(i, rand);
-		movePlayers();
-		Crafty.trigger('gametick');
-		this.clear();
-		this.counter++;
-	}
-	
-	this.fillRect = function() {
-		for(var i=0; i<this.sections; i++) {
-			var value = this.data[i];
-			if(value > this.threshold) {
-				var rand = Math.floor(Math.random() * 100);
-				if(rand <= 10) {		rand = 0; 	}
-				else if(rand <= 30) {	rand = 1;	}
-				else if(rand <= 50) { 	rand = 2;	}
-				else{					rand = 3;	}
-				
-				
-				this.fire(i, rand);
-				if(this.counter == this.sections) {
-					this.counter = 0;
-				}
-				break;
-				this.data[i] = 0;
-				this.context.fillStyle = 'black';
-			}
-			else {
-				this.context.fillStyle = 'blue';
-			}
-			
-			this.context.fillRect(i*this.width, 0, this.width-1, value);
-		}
-	};
-	
-	this.draw = function(data) {
-		for(var i=0; i<data.length; i++) {
-			var index = i % this.sections;
-			index += this.counter;
-			if(index >= this.sections) {
-				index -= this.sections;
-			}
-			var value = data[i] * 4;
-			this.data[index] += value * value;
-		}
-		this.fillRect();
-	};
+    this.el = document.getElementById(id);
+    this.context    = this.el.getContext("2d");
+    this.gradient   = null;
+    this.counter    = 0;
+    this.position   = 0;
+    this.sections   = 10;
+    this.threshold  = 150;
+    this.width      = 30;
+    this.maxObjects = 2 + Game.difficulty;
+    this.data       = [];
 
-	this.emptyData = function() {
-		for(var i=0; i<this.sections; i++) {
-			this.data[i] = 0;
-		}
-	};
-	
-	this.clear = function() {
-		this.emptyData();
-		this.el.width = this.el.width;
-	};
-	
-	this.emptyData();
-	return this;
+    this.fire = function(i, rand) {
+        Game.createWorldObject(i, rand);
+        Game.movePlayers();
+        Crafty.trigger('gametick');
+    }
+
+    this.drawRect = function(x, value, startValue) {
+        var w = x * this.width;
+        var d = this.width - 1;
+        for(var i=startValue; i<value; i++) {
+            this.context.fillRect(w, 0, d, i);
+        }
+    };
+
+    this.drawData = function() {
+        var fired = 0;
+        for(var i=0; i<this.sections; i++) {
+            var value = this.data[i];
+            this.context.fillStyle = 'blue';
+            this.drawRect(i, value, 0);
+            
+            if(value > this.threshold && fired < this.maxObjects) {
+                var rand = Math.floor(Math.random() * 100);
+                if (rand <= 10) {
+                    rand = 0;
+                }
+                else if (rand <= 30) {
+                    rand = 1;
+                }
+                else if (rand <= 50) {
+                    rand = 2;
+                }
+                else {
+                    rand = 3;
+                }
+
+                this.fire(i, rand);
+                fired++;
+            }
+        }
+
+        if (fired) {
+            this.clear();
+            this.position++;
+            if (this.position == this.sections) {
+                this.position = 0;
+            }
+        }
+    };
+
+    this.draw = function(data) {
+        this.counter++;
+        for(var i = 0; i < data.length; i++) {
+            var index = i % this.sections;
+            index += this.position;
+            if (index >= this.sections) {
+                index -= this.sections;
+            }
+            var value = data[i] * (2 + Game.difficulty);
+            value = value * value;
+            this.data[index] += value;
+        }
+        this.drawData();
+    };
+
+    this.emptyData = function() {
+        for ( var i = 0; i < this.sections; i++) {
+            this.data[i] = 0;
+        }
+    };
+
+    this.clear = function() {
+        this.emptyData();
+        this.el.width = this.el.width;
+    };
+
+    this.emptyData();
+    return this;
 };
 
 function createEqCanvas() {
-	canvas = new EqCanvas("eq");
-	
-	SC.initialize({
-	  client_id: '332b52d99a4f6a843cdc4d92dc77d4d9'
-	});
-	
-	SC.stream("/tracks/56526690", {
-			autoPlay: false,
-			autoLoad: true,
-			useEQData: true,
-			onplay: function(){
-			},
-			onload: function(){
-				console.log('ready');
-			},
-			whileplaying: function(){
-				canvas.draw(this.eqData);
-			}
-		},
-		function(sound) {
-			sound.play();
-		}
-	);
+    canvas = new EqCanvas("eq");
+
+    SC.initialize({
+        client_id : '332b52d99a4f6a843cdc4d92dc77d4d9'
+    });
+
+    SC.stream("/tracks/56526690", {
+        autoPlay : false,
+        autoLoad : true,
+        useEQData : true,
+        onplay : function() {
+        },
+        onload : function() {
+            console.log('ready');
+        },
+        whileplaying : function() {
+            canvas.draw(this.eqData);
+        }
+    }, function(sound) {
+        Game.music = sound;
+        sound.play();
+    });
 }
 
 

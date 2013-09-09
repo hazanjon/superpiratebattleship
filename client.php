@@ -42,12 +42,12 @@ else {
     
 	    var pusher = new Pusher('8d6d30d2c32b3a486688', { authEndpoint: '/pusher_auth.php' });
 	    var channel = pusher.subscribe('test_channel');
-	    var privateChannel = pusher.subscribe('private-channel');
+	    var privateChannel = pusher.subscribe('<?php echo "private-channel{$game_id}";?>');
 	    
 	    var user_id = '<?php echo $_GET['id']; ?>';
 	    var control = function(num){
 		    console.log(num);
-	        privateChannel.trigger('client-ev', {id: user_id, button: num});	
+	        privateChannel.trigger('client-ev', {id: user_id, button: num});
 	    }
     </script>
 </head>

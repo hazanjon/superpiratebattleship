@@ -1,9 +1,19 @@
-$text_css = {
-    'color': 'white',
-    'font-family': 'Arial',
-    'font-size': '24px',
-    'text-align': 'center'
-};
+// It's not pretty, but that can come in time
+Crafty.scene("EndGame", function() {
+    for(var prop in players) {
+        if (players.hasOwnProperty(prop)) {
+            var name = players[prop].name;
+        }
+    }
+    
+    Crafty.e("2D, DOM, Text")
+          .css({
+              'height' : '50px',
+              'width' : '700px',
+              'text-align': 'center'
+          })
+          .text("Aaaaarrrrr<br/>"+name+" is the winner");
+});
 
 Crafty.scene("Game", function() {
     //-- Set Side of screen
@@ -22,8 +32,40 @@ Crafty.scene("Game", function() {
     
 });
 
-Crafty.scene("Info", function() {
-	Crafty.scene("Game");
+Crafty.scene("Menu", function() {
+    var x = (Game.width()-310) / 2;
+    Crafty.e("2D, DOM, Mouse, menu_easy")
+          .attr({
+              'x' : x,
+              'y' : 20,
+              'h' : 180,
+              'w' : 310
+          })
+          .bind('Click', function(){
+              Game.create(1);
+          });
+    
+    Crafty.e("2D, DOM, Mouse, menu_medium")
+          .attr({
+              'x' : x,
+              'y' : 220,
+              'h' : 180,
+              'w' : 310
+          })
+          .bind('Click', function(){
+              Game.create(2);
+          });
+    
+    Crafty.e("2D, DOM, Mouse, menu_hard")
+          .attr({
+              'x' : x,
+              'y' : 420,
+              'h' : 180,
+              'w' : 310
+          })
+          .bind('Click', function(){
+              Game.create(3);
+          });
 });
 
 Crafty.scene("Loading", function() {
@@ -34,7 +76,12 @@ Crafty.scene("Loading", function() {
               'y': Game.height()/2 - 24,
               'w': Game.width()
           })
-          .css($text_css);
+          .css({
+              'color': 'white',
+              'font-family': 'Arial',
+              'font-size': '24px',
+              'text-align': 'center'
+          });
     
 
     //-- Sprite Loading
@@ -50,6 +97,12 @@ Crafty.scene("Loading", function() {
     Crafty.sprite(64, "Design/assets/img/heart.png", { heart: [0, 0]});
     Crafty.sprite(64, "Design/assets/img/coin.png", { coin: [0, 0]});
     Crafty.sprite(64, "Design/assets/img/star.png", { star: [0, 0]});
-   
-   Crafty.scene("Info");
+    
+    Crafty.sprite("Design/assets/img/menu_buttons.png", {
+        'menu_easy'   : [0, 0],
+        'menu_medium' : [0, 180],
+        'menu_hard'   : [0, 360]
+    });
+    
+    Crafty.scene("Menu");
 });

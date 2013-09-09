@@ -64,7 +64,7 @@ class gameController {
 		$this->initPusher();
 		try {
 			$params  = array('id'=>$number, 'name'=>$name);
-			$channel = sprintf('%04u',$game_id).PUSHER_CHANNEL;
+			$channel = PUSHER_CHANNEL.sprintf('%04u',$game_id);
 			error_log("Pusher newUser_event : {$game_id} - {$channel} - {$name} - {$number}");
 			$this->pusher->trigger($channel, 'newUser_event', $params);
 		}

@@ -25,6 +25,7 @@ if($_GET['newGame']) {
     <script src="http://js.pusher.com/2.1/pusher.min.js"></script>
     <script src="lib/crafty.js"></script>
     <script src="src/game.js"></script>
+    <script src="src/player.js"></script>
     <script src="src/scenes.js"></script>
     <script src="src/components.js"></script>
     <script src="src/pusher.js"></script>
@@ -35,13 +36,6 @@ if($_GET['newGame']) {
     <script src="src/main.js"></script>
 </head>
 <body>
-	<div class="overlay">
-		<div class="overlayBg"></div>
-		<div class="gameOptions">
-			<p>Would you like to create a game?</p>
-			<input type="button" id="gameCreator" value="Yes" />
-		</div>
-	</div>
     <div class="" style="position: relative; height: 100px; width: 640px; margin-left: 107px; margin-bottom: -20px">
 		<canvas id="eq" style="width:100%; height:100%; border:1px solid black;"></canvas>
     </div>

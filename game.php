@@ -1,12 +1,5 @@
 <?php 
 include("definitions.php");
-
-$result  = $db->query("SELECT MAX(game_id) as game_id FROM games")->fetch_assoc();
-$game_id = !empty($result['game_id']) ? $result['game_id'] : 1;
-
-
-
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,19 +22,18 @@ $game_id = !empty($result['game_id']) ? $result['game_id'] : 1;
     
     <script>
     $(document).ready(function() {
-        
         var debug = false;
         
         //-- Window Load
         window.addEventListener('load', Game.start);
         
         $('.newPlayer').click(function() {
-            addNewPlayer("+" + Math.floor(Math.random()*54645645), "Jake");
+            Game.addNewPlayer("+" + Math.floor(Math.random()*54645645), "Jake");
             return false;
         }); 
         
         $('.newObs').click(function() {
-            createWorldObject(Math.floor(Math.random()*10), Math.floor(Math.random()*10));
+            Game.createWorldObject(Math.floor(Math.random()*10), Math.floor(Math.random()*10));
             return false;
         });
 

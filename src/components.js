@@ -37,7 +37,7 @@ Crafty.c('Garbage' , {
 
 Crafty.c('Player', {
     init: function() {
-        this.requires('Grid, Color, Fourway, Collision, Actor, ship1')
+        this.requires('Grid, Color, Fourway, Collision, Actor, Tween, ship1')
         .fourway(2)
         .color('rgb(0, 67, 171)')
         .onHit('Land', this.hitTest)
@@ -72,7 +72,8 @@ Crafty.c('GameTickObject', {
 	init: function() {
 		this.requires('BaseObject')
 			.bind('gametick', function() {
-				this.y += Game.map_grid.tile.height;
+				this.tween({x: this.x, y: this.y + Game.map_grid.tile.height}, Game.speed)
+				//this.y += Game.map_grid.tile.height;
 			});
 	}
 });
@@ -83,17 +84,12 @@ Crafty.c('Island', {
     this.requires('GameTickObject, Actor, island2')
         .color('rgb(211, 84, 0)')
         .onHit('Player', this.hitTest)
-        .onHit('ShootRight', this.cannon);
     },
     hitTest: function(data) {
         var player_id = pEntity[data[0].obj._entityName];
         //-- Decreate health
-        updateHealth(player_id, -1);
+        players[player_id].updateHealth(-1);
         //-- Destroy element
-        this.destroy();
-        
-    },
-    cannon: function(data) {
         this.destroy();
     }
 });
@@ -102,18 +98,14 @@ Crafty.c('Health', {
   init: function() {
     this.requires('GameTickObject, Actor, heart')
         .color('rgb(0, 67, 171)')
-        .onHit('ShootRight', this.cannon)
         .onHit('Player', this.hitTest);
     },
     hitTest: function(data) {
         var player_id = pEntity[data[0].obj._entityName];
         //-- Decreate health
         $.post('http://superpiratebattleship.com/webhook.php', {player_id: player_id, type: 'health'});
-        updateHealth(player_id, 1);
+        players[player_id].updateHealth(1);
         //-- Destroy element
-        this.destroy();
-    },
-    cannon: function(data) {
         this.destroy();
     }
 });
@@ -122,7 +114,6 @@ Crafty.c('Coins', {
   init: function() {
     this.requires('GameTickObject, Actor, coin')
         .color('rgb(0, 67, 171)')
-        .onHit('ShootRight', this.cannon)
         .onHit('Player', this.hitTest);
     },
     hitTest: function(data) {
@@ -130,10 +121,7 @@ Crafty.c('Coins', {
         var player_id = pEntity[data[0].obj._entityName];
         //-- Decreate health
         $.post('http://superpiratebattleship.com/webhook.php', {player_id: player_id, type: 'coin'});
-        updateScore(player_id, 1);
-        this.destroy();
-    },
-    cannon: function(data) {
+        players[player_id].updateScore(1);
         this.destroy();
     }
 });
@@ -149,37 +137,40 @@ Crafty.c('Powerup', {
         var player_id = pEntity[data[0].obj._entityName];
         //-- Decreate health
         $.post('http://superpiratebattleship.com/webhook.php', {player_id: player_id, type: 'powerup'});
-        givePowerup(player_id, true);
+        players[player_id].givePowerup(true);
         this.destroy();
     }
 });
 
 Crafty.c('BaseCannonball', {
-	init: function() {
-		this.requires('BaseObject, Actor, cannonball')
-			.color('rgb(0, 67, 171')
-			.onHit('Player', this.hitTest)
-			.onHit('GameTickObject', this.hitTest);
-	},
-    hitTest: function(data) {
-    	var player_id = pEntity[data[0].obj._entityName];
-    	//-- Decreate health
-    	console.log(player_id);
-    	updateHealth(player_id, 2);
+    init: function() {
+        this.requires('BaseObject, Actor, cannonball')
+            .color('rgb(0, 67, 171')
+            .attr({'h':31, 'w': 31})
+            .onHit('Player', this.hitPlayer)
+            .onHit('GameTickObject', this.hitObject);
+    },
+    hitPlayer: function(data) {
+        var player_id = pEntity[data[0].obj._entityName];
+        //-- Decrease health
+        players[player_id].updateHealth(-2);
         this.destroy();
+    },
+    hitObject: function(data) {
+        data[0].obj.destroy();
      }
 });
 
 Crafty.c('ShootRight', {
   init: function() {
     this.requires('BaseCannonball')
-        .tween({x: this.x  + 1000, y: this.y}, 100)
+        .tween({x: this.x  + 1000, y: this.y}, 100);
     }
 });
 
 Crafty.c('ShootLeft', {
   init: function() {
     this.requires('BaseCannonball')
-        .tween({x: this.x  - 1000, y: this.y}, 100)
+        .tween({x: this.x  - 1000, y: this.y}, 100);
     }
 });
