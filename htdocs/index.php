@@ -22,6 +22,7 @@ if($_GET['newGame']) {
     <script src="http://js.pusher.com/2.1/pusher.min.js"></script>
     
     <script src="/res/js/crafty.js"></script>
+    <script src="/res/js/config.js"></script>
     <script src="/res/js/game.js"></script>
     <script src="/res/js/player.js"></script>
     <script src="/res/js/scenes.js"></script>

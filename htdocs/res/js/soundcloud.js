@@ -188,6 +188,9 @@ hack.calcEq = function(eq, position){
 			if(hack.vm.sound.position >= 8000){ //Dont generate before 10 secs
 				hack.generateBlocks(temptimebar, hack.vm.timebarAvg());
 			}
+			
+			//Game.movePlayers();
+			Crafty.trigger('gametick');
 		}
 		
 		if(eq && eq.left && eq.left.length){
@@ -368,7 +371,5 @@ hack.generateBlocks = function(timebar, timebarAvg){
 	hack.vm.timebarAvg((hack.vm.timebarAvg() + thisavg) / 2);
 	//hack.vm.timebar(timebar);
 //	console.log('////////////////////////////END ROW/////////////////////////////////////');
-	Game.movePlayers();
-	Crafty.trigger('gametick');
 }
 
