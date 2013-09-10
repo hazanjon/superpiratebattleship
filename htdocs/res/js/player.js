@@ -17,6 +17,17 @@ Player = function(player_id, player_name) {
         y: (Game.map_grid.height * Game.map_grid.tile.height) - Game.map_grid.tile.height,
         color: 'rgb(' + Math.floor(Math.random()*255) + ', ' + Math.floor(Math.random()*255) + ', ' + Math.floor(Math.random()*255) + ')'
     });
+    
+    this.object.bind('KeyDown', function(e) {
+        var keys = Config.playerKeyBindings[playerNum];
+        console.log(keys);
+        for(var item in keys){
+            if(keys[item].key == e.key){
+                Game.movePlayersData(player_id, keys[item].value);
+                break;
+            }   
+        }
+    });
     console.log("Added player: " + player_name + " [" + player_id + "] [" + this.ent + "]");
     
     var myHealthBar = false;
@@ -30,6 +41,7 @@ Player = function(player_id, player_name) {
     
     
     this.move = function(dir) {
+        console.log('move', dir);
         var myOldPositionY = this.object.y;
         var myOldPositionX = this.object.x;
         
