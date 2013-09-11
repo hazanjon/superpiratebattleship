@@ -20,7 +20,7 @@ Player = function(player_id, player_name) {
     
     this.object.bind('KeyDown', function(e) {
         var keys = Config.playerKeyBindings[playerNum];
-        console.log(keys);
+        
         for(var item in keys){
             if(keys[item].key == e.key){
                 Game.movePlayersData(player_id, keys[item].value);

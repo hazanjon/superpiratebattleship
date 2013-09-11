@@ -40,10 +40,6 @@ Game = {
         else {
             Crafty.scene("Menu");
         }
-        Crafty.bind('gametick', function() {
-            console.log('tick');
-            Game.movePlayers();
-        });
     },
     
     create: function(difficulty) {
@@ -75,10 +71,9 @@ Game = {
     },
 
     tick: function(debug) {
-        if(debug) {
-            Crafty.trigger('gametick');
-        }
-        //this.movePlayers();
+
+        Game.movePlayers();
+        Crafty.trigger('gametick');
     },
     
     movePlayersData: function(player_id, button) {

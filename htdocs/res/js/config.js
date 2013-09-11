@@ -1,5 +1,9 @@
 var Config = Config || {};
 
+Config.gameOptions = {
+	difficulty: 2,
+};
+
 Config.playerKeyBindings = [
 	{
 		forward: {
