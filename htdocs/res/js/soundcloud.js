@@ -19,6 +19,7 @@ var SCEqualizer = {
     },
     sweepDir: 	0,
     movingAvg: 	0,
+    generateDelay: 8000, //ms before starting object creation // @Todo move?
 
 	init: function(id) {
 		this.canvas = document.getElementById(id);
@@ -39,7 +40,7 @@ var SCEqualizer = {
         this.canvas.width = this.canvas.width;
     },
 
-    switchDirection: function(){
+    switchSweepDirection: function(){
 
     	if(this.lastpoint.position >= (this.sections/2)){
     		this.lastpoint.position -= this.sections;
@@ -49,12 +50,12 @@ var SCEqualizer = {
     		this.lastpoint.position = -this.lastpoint.position;
     	}
 
-		if(SCEqualizer.position >= 0){ //Dont generate before 10 secs
-			SCEqualizer.generateBlocks(SCEqualizer.waveData);
+		if(this.position >= this.generateDelay){ //Dont generate before 10 secs
+			this.generateBlocks(this.waveData);
 		}
 		
 		Game.tick();
-		SCEqualizer.clear();
+		this.clear();
     },
 
     drawBar: function(position, value){
@@ -96,7 +97,7 @@ var SCEqualizer = {
 		
 		if(this.sweepDir != dir){
 			this.sweepDir = dir;
-			this.switchDirection();
+			this.switchSweepDirection();
 		}
 		
 		if(dir){
@@ -150,7 +151,7 @@ SCEqualizer.generateBlocks = function(timebar){
 		timebarAvg += timebar[i];
 	}
 	
-	timebarAvg /= SCEqualizer.sections;
+	timebarAvg /= this.sections;
 	
 	
 	timebar2.sort(function (a, b) {
@@ -159,9 +160,9 @@ SCEqualizer.generateBlocks = function(timebar){
 	
 	var hprow = timebar.indexOf(timebar2[0]);
 	var coinrow = timebar.indexOf(timebar2[1]);
-	var mountain1 = timebar.indexOf(timebar2[SCEqualizer.sections - 1]);
-	var mountain2 = timebar.indexOf(timebar2[SCEqualizer.sections - 2]);
-	var mountain3 = timebar.indexOf(timebar2[SCEqualizer.sections - 3]);
+	var mountain1 = timebar.indexOf(timebar2[this.sections - 1]);
+	var mountain2 = timebar.indexOf(timebar2[this.sections - 2]);
+	var mountain3 = timebar.indexOf(timebar2[this.sections - 3]);
 		
 	if(timebar[hprow] < (timebarAvg * 0.6) && Math.random()  > 0.8){
 		//console.log('power');
