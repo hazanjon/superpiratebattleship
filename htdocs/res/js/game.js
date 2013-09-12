@@ -73,10 +73,9 @@ Game = {
     },
 
     tick: function(debug) {
-        if(debug) {
-            Crafty.trigger('gametick');
-        }
-        this.movePlayers();
+
+        Game.movePlayers();
+        Crafty.trigger('gametick');
     },
     
     movePlayersData: function(player_id, button) {

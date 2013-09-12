@@ -37,8 +37,7 @@ Crafty.c('Garbage' , {
 
 Crafty.c('Player', {
     init: function() {
-        this.requires('Grid, Color, Fourway, Collision, Actor, Tween, ship1')
-        .fourway(2)
+        this.requires('Grid, Color, Keyboard, Collision, Actor, Tween, ship1')
         .color('rgb(0, 67, 171)')
         .onHit('Land', this.hitTest)
         .onHit('Player', this.stopMovement);
