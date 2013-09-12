@@ -141,7 +141,7 @@ Game = {
     
     webhook: function(player_id, type) {
         $.post('http://superpiratebattleship.com/webhook.php', {'game_id': this.game_id, 'player_id': player_id, 'type': type});
-    }
+    },
     
     winCondition: function() {
         for(var prop in players) {
