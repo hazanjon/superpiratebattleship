@@ -99,8 +99,8 @@ class gameController {
     }
     
     public function getPickup($game_id, $number) {
-        $result = $db->query("SELECT pickup FROM events WHERE number='$id'AND game_id='{$game_id}' AND status='0' AND pickup IN ('coin', 'health', 'powerup') ORDER BY event_id DESC LIMIT 1")->fetch_assoc();
-        $db->query("UPDATE events SET status=1 WHERE number='$id'");
+        $result = $this->db->query("SELECT pickup FROM events WHERE number='{$number}'AND game_id='{$game_id}' AND status='0' AND pickup IN ('coin', 'health', 'powerup') ORDER BY event_id DESC LIMIT 1")->fetch_assoc();
+        $this->db->query("UPDATE events SET status=1 WHERE number='{$number}'");
         
         return !empty($result['pickup']) ? $result['pickup'] : false;
     }
@@ -138,11 +138,11 @@ class gameController {
         return $this->pusher->socket_auth($channel, $socket);
     }
     
-    public function keyPress($number, $digit) {
+    public function keyPress($game_id, $number, $digit) {
         $this->initPusher();
-        $player  = $this->getPlayerByNumber($number);
-        $channel = PUSHER_CHANNEL.$this->formatGameId($player['game_id']);
+        $channel = PUSHER_CHANNEL.$this->formatGameId($game_id);
         $params  = array('id'=>$number, 'button'=>$digit);
+        error_log("Pushers : $channel, keypress_event, id: {$number}, button: {$digit}");
         return $this->pusher->trigger($channel, 'keyPress_event', $params);
     }
 

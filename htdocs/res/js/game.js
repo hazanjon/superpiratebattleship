@@ -55,9 +55,8 @@ Game = {
             $("#phoneNumber").text(data.phone);
             $("#gameCode").text(data.game_id);
             $(".callIn").show();
-            $(".overlay").fadeOut("slow", function(){ $(this).remove() });
-            this.channel = subscribeChannel(data.game_id);
-            this.game_id = data.game_id;
+            Game.channel = subscribeChannel(data.game_id);
+            Game.game_id = data.game_id;
             Crafty.scene("Game");
         }
     },
