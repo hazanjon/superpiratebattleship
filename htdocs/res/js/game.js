@@ -13,6 +13,7 @@ Game = {
           height: 64
         }
     },
+    game_id         : 0,
     channel         : false,
     equalizer       : false,
     music           : false,
@@ -56,6 +57,7 @@ Game = {
             $(".callIn").show();
             $(".overlay").fadeOut("slow", function(){ $(this).remove() });
             this.channel = subscribeChannel(data.game_id);
+            this.game_id = data.game_id;
             Crafty.scene("Game");
         }
     },
@@ -137,6 +139,10 @@ Game = {
             if (r == 3) {Crafty.e('Island, island3').at(myPositionX, 0);}
         }
     },
+    
+    webhook: function(player_id, type) {
+        $.post('http://superpiratebattleship.com/webhook.php', {'game_id': this.game_id, 'player_id': player_id, 'type': type});
+    }
     
     winCondition: function() {
         for(var prop in players) {
