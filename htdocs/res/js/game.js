@@ -1,6 +1,5 @@
 var players     = new Array(); //-- Setup all player array information
 var movement    = {}; //-- Sets up all potential movement
-var pEntity     = new Array(); //-- Hack to find player object based on entity
 debug           = false;
 
 Game = {
@@ -23,6 +22,7 @@ Game = {
     startingHealth  : 5,
     speed           : 20,
     ships           : ['ship_blue', 'ship_green', 'ship_yellow', 'ship_red'],
+    pEntity         : [], //-- Hack to find player object based on entity
 
     width: function() {
         return Game.map_grid.width * Game.map_grid.tile.width;
@@ -73,37 +73,71 @@ Game = {
 
     tick: function(debug) {
 
-        Game.movePlayers();
+        Game.movePlayersVertical(1);
+        Crafty.trigger('hitcheck');
+        Game.movePlayersHorizontal(1);
         Crafty.trigger('gametick');
+        Crafty.trigger('hitcheck');
+        Game.usePlayerItem();
     },
     
     movePlayersData: function(player_id, button) {
         //-- movePlayers will now hold data until we ask for it
-        console.log('Player data : '+player_id +' '+ button);
         movement[player_id] = button;
     },
     
-    movePlayers: function() {
+    movePlayersVertical: function(distance) {
         //-- Lets go through each element, and see what direction we are 
         //-- going to attempt
         for(var prop in movement) {
             if (movement.hasOwnProperty(prop)) {
+
+                if (typeof players[prop] === 'undefined')
+                   continue;
+
                 //-- Do the movement
-                this.actuallyMovePlayer(prop, movement[prop]);
+                var result = players[prop].moveVertical(movement[prop], distance);
                 //-- Clear movement
-                delete movement[prop];
+                if(result) //Only clear if it actually did something
+                    delete movement[prop];
             }
         }
     },
     
-    actuallyMovePlayer: function(player_id, dir) {
-        //-- YES, its three functions.
-        if (players[player_id] === undefined) {
-           console.log("Player not found - " + player_id);
-           return false;
+    movePlayersHorizontal: function(distance) {
+        //-- Lets go through each element, and see what direction we are 
+        //-- going to attempt
+        for(var prop in movement) {
+            if (movement.hasOwnProperty(prop)) {
+
+                if (typeof players[prop] === 'undefined')
+                   continue;
+
+                //-- Do the movement
+                var result = players[prop].moveHorizontal(movement[prop], distance);
+                //-- Clear movement
+                if(result) //Only clear if it actually did something
+                    delete movement[prop];
+            }
         }
-        
-        players[player_id].move(dir);
+    },
+    
+    usePlayerItem: function() {
+        //-- Lets go through each element, and see what direction we are 
+        //-- going to attempt
+        for(var prop in movement) {
+            if (movement.hasOwnProperty(prop)) {
+
+                if (typeof players[prop] === 'undefined')
+                   continue;
+
+                //-- Do the movement
+                var result = players[prop].useitem(movement[prop]);
+                //-- Clear movement
+                if(result) //Only clear if it actually did something
+                    delete movement[prop];
+            }
+        }
     },
     
     addNewPlayer: function(player_id, player_name) {
@@ -122,19 +156,19 @@ Game = {
         
         if (type == 0) {
             //-- Will be a POWERUP
-            Crafty.e('Powerup').at(myPositionX, 0);
+            Crafty.e('Powerup').at(myPositionX, -1);
         } else if (type == 1) {
             //-- Good thing - Coins
-            Crafty.e('Coins').at(myPositionX, 0);
+            Crafty.e('Coins').at(myPositionX, -1);
         } else if (type == 2) {
             //-- Good thing - Health
-            Crafty.e('Health').at(myPositionX, 0);
+            Crafty.e('Health').at(myPositionX, -1);
         } else {
             //-- Going to need a random island
             var r = Math.floor(Math.random()*3) + 1;
-            if (r == 1) {Crafty.e('Island, island1').at(myPositionX, 0);}
-            if (r == 2) {Crafty.e('Island, island2').at(myPositionX, 0);}
-            if (r == 3) {Crafty.e('Island, island3').at(myPositionX, 0);}
+            if (r == 1) {Crafty.e('Island, island1').at(myPositionX, -1);}
+            if (r == 2) {Crafty.e('Island, island2').at(myPositionX, -1);}
+            if (r == 3) {Crafty.e('Island, island3').at(myPositionX, -1);}
         }
     },
     
@@ -150,8 +184,11 @@ Game = {
                 //window.location = 'win.php?id=' + prop + '&name=' + players[prop]['name'];
             }
         }
-    }
+    },
     
+    getPlayerEntityFromCollision: function(data){
+        return this.pEntity[data[0].obj._entityName];
+    }
     
 }
 

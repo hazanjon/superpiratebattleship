@@ -39,7 +39,7 @@ Crafty.c('Player', {
     init: function() {
         this.requires('Grid, Color, Keyboard, Collision, Actor, Tween, ship1')
         .color('rgb(0, 67, 171)')
-        .onHit('Land', this.hitTest)
+        .onHit('Land', this.hitTest)//Land is the left and right borders
         .onHit('Player', this.stopMovement);
     },
     hitTest: function(data) {
@@ -71,10 +71,27 @@ Crafty.c('GameTickObject', {
 	init: function() {
 		this.requires('BaseObject')
 			.bind('gametick', function() {
-				this.tween({x: this.x, y: this.y + Game.map_grid.tile.height}, Game.speed)
-				//this.y += Game.map_grid.tile.height;
+				//this.tween({x: this.x, y: this.y + Game.map_grid.tile.height}, Game.speed); //Slightly faster than game time to make sure everything is in place
+				this.y += Game.map_grid.tile.height;
+			})
+			.bind('hitcheck', function() {
+				this.haveIHitAPlayer(this, 'half');
 			});
-	}
+	},
+    haveIHitAPlayer: function(object, time){//@Todo: Find a better place for this
+            if(object.__c.Collision){
+                var hitdata = object.hit('Player');
+                if(hitdata !== false){
+                    var player_id = Game.getPlayerEntityFromCollision(hitdata);
+                    console.log(time, hitdata[0].overlap, hitdata);
+                    if(Math.abs(hitdata[0].overlap) > 30){
+                        object.hitPlayer(player_id);
+                    }
+                    //-- Destroy element
+                    object.destroy();
+                }  
+            }
+        }
 });
 
 //-- Islands
@@ -82,14 +99,10 @@ Crafty.c('Island', {
   init: function() {
     this.requires('GameTickObject, Actor, island2')
         .color('rgb(211, 84, 0)')
-        .onHit('Player', this.hitTest)
     },
-    hitTest: function(data) {
-        var player_id = pEntity[data[0].obj._entityName];
+    hitPlayer: function(player_id) {
         //-- Decreate health
         players[player_id].updateHealth(-1);
-        //-- Destroy element
-        this.destroy();
     }
 });
 
@@ -97,14 +110,10 @@ Crafty.c('Health', {
   init: function() {
     this.requires('GameTickObject, Actor, heart')
         .color('rgb(0, 67, 171)')
-        .onHit('Player', this.hitTest);
     },
-    hitTest: function(data) {
-        var player_id = pEntity[data[0].obj._entityName];
+    hitPlayer: function(player_id) {
         Game.webhook(player_id, 'health');
         players[player_id].updateHealth(1);
-        //-- Destroy element
-        this.destroy();
     }
 });
 
@@ -112,14 +121,10 @@ Crafty.c('Coins', {
   init: function() {
     this.requires('GameTickObject, Actor, coin')
         .color('rgb(0, 67, 171)')
-        .onHit('Player', this.hitTest);
     },
-    hitTest: function(data) {
-        //-- The player has been hit! Get player var
-        var player_id = pEntity[data[0].obj._entityName];
+    hitPlayer: function(player_id) {
         Game.webhook(player_id, 'coin');
         players[player_id].updateScore(1);
-        this.destroy();
     }
 });
 
@@ -127,15 +132,10 @@ Crafty.c('Powerup', {
   init: function() {
     this.requires('GameTickObject, Actor, star')
         .color('rgb(0, 67, 171)')
-        .onHit('Player', this.hitTest);
     },
-    hitTest: function(data) {
-        //-- The player has been hit! Get player var
-        var player_id = pEntity[data[0].obj._entityName];
+    hitPlayer: function(player_id) {
         Game.webhook(player_id, 'powerup');
-        //-- Decreate health
         players[player_id].givePowerup(true);
-        this.destroy();
     }
 });
 
@@ -145,10 +145,11 @@ Crafty.c('BaseCannonball', {
             .color('rgb(0, 67, 171')
             .attr({'h':31, 'w': 31})
             .onHit('Player', this.hitPlayer)
-            .onHit('GameTickObject', this.hitObject);
+            .onHit('GameTickObject', this.hitObject)
+            .unbind('TweenEnd');//This uses custom hit code, done use the inherited
     },
     hitPlayer: function(data) {
-        var player_id = pEntity[data[0].obj._entityName];
+        var player_id = Game.getPlayerEntityFromCollision(data);
         //-- Decrease health
         players[player_id].updateHealth(-2);
         this.destroy();

@@ -10,7 +10,7 @@ Player = function(player_id, player_name) {
     this.ent        = this.object._entityName;
     
     // soomething to do with collisions?
-    pEntity[this.object._entityName] = player_id;
+    Game.pEntity[this.object._entityName] = player_id;
     //-- Set player up, ready to play
     this.object.attr({
         x: ((playerNum+1) * (Game.map_grid.tile.width * 2)),
@@ -40,14 +40,49 @@ Player = function(player_id, player_name) {
     $('ul.ll').append('<li class="li_' + this.niceName + '"><div class="userListLi"><div class="userListName"><a href="client.php?id=' + encodeURIComponent(player_id) + '&game_id=' + Game.game_id + '" style="color: #fff; text-decoration: none;" target="_blank">' + player_name + '</a></div><div class="userListPowerup"><img src="http://images.wikia.com/mario/images/4/4b/Ice_Flower_Artwork_-_New_Super_Mario_Bros._Wii.png" width="32px" height="32px" style="margin-left: 15px;margin-top:5px"></div><div class="userListCoinage"><img src="http://icons.iconarchive.com/icons/ph03nyx/super-mario/256/Retro-Coin-icon.png" width="32px" style="margin-right: 15px;margin-top:-5px"><span>0</span></div><div style="clear: both"></div></div><div class="userListHealth" style="width: 100%;background: ' + myHealthBar + '"></div></li>');
     
     
-    this.move = function(dir) {
+    this.moveVertical = function(dir, distance) {
+
+        if(typeof distance === 'undefined')
+            distance = 1;
+
         var myOldPositionY = this.object.y;
+        
+        if (dir == 2) {
+            //this.object.tween({y: myOldPositionY - Game.map_grid.tile.height * distance}, Game.speed / distance);
+            this.object.y -=  Game.map_grid.tile.height * distance;
+            return true;
+        }
+        if (dir == 8) {
+            //this.object.tween({y: myOldPositionY + Game.map_grid.tile.height * distance}, Game.speed / distance);
+            this.object.y +=  Game.map_grid.tile.height * distance; 
+            return true;
+        }
+
+        return false;
+    };
+    
+    this.moveHorizontal = function(dir, distance) {
+
+        if(typeof distance === 'undefined')
+            distance = 1;
+
         var myOldPositionX = this.object.x;
         
-        if (dir == 2) {this.object.tween({y: myOldPositionY - Game.map_grid.tile.height}, Game.speed);}
-        if (dir == 8) {this.object.tween({y: myOldPositionY + Game.map_grid.tile.height}, Game.speed);}
-        if (dir == 4) {this.object.tween({x: myOldPositionX - Game.map_grid.tile.width}, Game.speed);}
-        if (dir == 6) {this.object.tween({x: myOldPositionX + Game.map_grid.tile.width}, Game.speed);}
+        if (dir == 4) {
+            //this.object.tween({x: myOldPositionX - Game.map_grid.tile.width * distance}, Game.speed / distance); 
+            this.object.x -=  Game.map_grid.tile.width * distance; 
+            return true;
+        }
+        if (dir == 6) {
+            //this.object.tween({x: myOldPositionX + Game.map_grid.tile.width * distance}, Game.speed / distance); 
+            this.object.x +=  Game.map_grid.tile.width * distance; 
+            return true;
+        }
+
+        return false;
+    };
+
+    this.useitem = function(dir) {
         //-- Shoot
         if (dir == 5) {
             if (this.powerup == true) {
@@ -55,7 +90,9 @@ Player = function(player_id, player_name) {
                 var x2 = Crafty.e('ShootLeft').attr({x: this.object.x - Game.map_grid.tile.width, y: this.object.y + (Game.map_grid.tile.height/5)});
                 this.givePowerup(false);
             }
+            return true;
         }
+        return false;
     };
     
     this.updateHealth = function(health_change) {
