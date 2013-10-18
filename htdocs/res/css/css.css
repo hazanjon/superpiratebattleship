@@ -131,3 +131,12 @@ ul.testgrid li {
     font-size: 14px;
     margin-bottom: -15px;
 }
+
+.controls{
+    padding-bottom: 20px;  
+}
+
+.controls button{
+    height: 200px;
+    font-size: 40px;
+}
