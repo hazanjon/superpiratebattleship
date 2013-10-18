@@ -48,13 +48,13 @@ Player = function(player_id, player_name) {
         var myOldPositionY = this.object.y;
         
         if (dir == 2) {
-            //this.object.tween({y: myOldPositionY - Game.map_grid.tile.height * distance}, Game.speed / distance);
-            this.object.y -=  Game.map_grid.tile.height * distance;
+            this.object.tween({y: myOldPositionY - Game.map_grid.tile.height * distance}, Game.speed / distance);
+            //this.object.y -=  Game.map_grid.tile.height * distance;
             return true;
         }
         if (dir == 8) {
-            //this.object.tween({y: myOldPositionY + Game.map_grid.tile.height * distance}, Game.speed / distance);
-            this.object.y +=  Game.map_grid.tile.height * distance; 
+            this.object.tween({y: myOldPositionY + Game.map_grid.tile.height * distance}, Game.speed / distance);
+            //this.object.y +=  Game.map_grid.tile.height * distance; 
             return true;
         }
 
@@ -69,13 +69,13 @@ Player = function(player_id, player_name) {
         var myOldPositionX = this.object.x;
         
         if (dir == 4) {
-            //this.object.tween({x: myOldPositionX - Game.map_grid.tile.width * distance}, Game.speed / distance); 
-            this.object.x -=  Game.map_grid.tile.width * distance; 
+            this.object.tween({x: myOldPositionX - Game.map_grid.tile.width * distance}, Game.speed / distance); 
+            //this.object.x -=  Game.map_grid.tile.width * distance; 
             return true;
         }
         if (dir == 6) {
-            //this.object.tween({x: myOldPositionX + Game.map_grid.tile.width * distance}, Game.speed / distance); 
-            this.object.x +=  Game.map_grid.tile.width * distance; 
+            this.object.tween({x: myOldPositionX + Game.map_grid.tile.width * distance}, Game.speed / distance); 
+            //this.object.x +=  Game.map_grid.tile.width * distance; 
             return true;
         }
 
@@ -107,17 +107,9 @@ Player = function(player_id, player_name) {
         //-- End of game conditions
         if (this.health <= 0) {
             this.object.destroy();
-            delete players[this.player_id];
-            //-- Check for game end conditions
-            if (objectLength(players) == 1) {
-                //-- Work out who has won
-                Game.winCondition();
-            }
+            Game.checkWin();
+            //delete players[this.player_id];
             
-            if (objectLength(players) == 0) {
-                alert("Game over condition - Noone wins!");
-                //Crafty.scene("GameOver");
-            }
         }
     };
     

@@ -35,7 +35,6 @@ Game = {
     init: function() {
         if(!Game.gameStart){
             Crafty.init(Game.width(), Game.height());
-            Crafty.background('rgb(0, 67, 171)');
             Crafty.scene("Loading");
         }
         else {
@@ -177,17 +176,31 @@ Game = {
     },
     
     winCondition: function() {
-        for(var prop in players) {
-            if (players.hasOwnProperty(prop)) {
-                this.music.stop();
-                Crafty.scene("EndGame");
-                //window.location = 'win.php?id=' + prop + '&name=' + players[prop]['name'];
-            }
-        }
+        this.music.stop();
+        Crafty.scene("EndGame");
+        //window.location = 'win.php?id=' + prop + '&name=' + players[prop]['name'];
     },
     
     getPlayerEntityFromCollision: function(data){
         return this.pEntity[data[0].obj._entityName];
+    },
+    
+    checkWin: function() {
+        // check for players still alive
+        var count = 0;
+        var winner = '';
+        for(var x in players) {
+            var p = players[x];
+            if(p.health > 0) {
+                winner = p.name;
+                count++;
+            }
+        }
+        
+        if(count == 1) {
+            Game.winner = winner;
+            Game.winCondition();
+        }
     }
     
 }

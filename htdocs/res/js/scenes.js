@@ -1,21 +1,53 @@
 // It's not pretty, but that can come in time
 Crafty.scene("EndGame", function() {
-    for(var prop in players) {
-        if (players.hasOwnProperty(prop)) {
-            var name = players[prop].name;
+    var winner = '';
+    var coins = [];
+    
+    for(var x in players) {
+        var p = players[x];
+        if(p.health > 0) {
+            winner = p.name;
+        }
+        else {
+            if(!coins[0]) {
+                coins.push(p.player_id);
+            }
+            else {
+                for(var c in coins) {
+                    var pc = coins[c];
+                    if(p.score > players[pc].score) {
+                        coins.splice(c,0,p.player_id);
+                        break;
+                    }
+                }
+            }
         }
     }
     
+    var text = "";
+    var positions = ['second', 'third', 'last', 'nowhere'];
+    for(var c in coins) {
+        var p = players[coins[c]];
+        text += p.name+" came "+positions[c]+"<br/>";
+    }
+    
+    Crafty.background("rgb(150,150,150)");
     Crafty.e("2D, DOM, Text")
           .css({
               'height' : '50px',
               'width' : '700px',
-              'text-align': 'center'
+              'text-align': 'center',
+              'font-size' : '2em'
           })
-          .text("Aaaaarrrrr<br/>"+name+" is the winner");
+          .text("Aaaaarrrrr<br/>"+winner+" is the winner<br/>"+text)
+          .attr({ x: 32, y: 100 });;
+    
+          
+  
 });
 
 Crafty.scene("Game", function() {
+    Crafty.background('rgb(0, 67, 171)');
     //-- Set Side of screen
     //-- Set everything in the leftmost and rightmost lanes as land
     for (var x = 0; x < Game.map_grid.width; x++) {
@@ -69,6 +101,8 @@ Crafty.scene("Menu", function() {
 });
 
 Crafty.scene("Loading", function() {
+    Crafty.background('rgb(0, 67, 171)');
+    
     Crafty.e("2D, DOM, Text")
           .text("Loading....")
           .attr({

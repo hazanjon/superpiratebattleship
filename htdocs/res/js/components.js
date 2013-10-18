@@ -39,6 +39,7 @@ Crafty.c('Player', {
     init: function() {
         this.requires('Grid, Color, Keyboard, Collision, Actor, Tween, ship1')
         .color('rgb(0, 67, 171)')
+        .collision(new Crafty.polygon([16,16], [16,48], [48,48], [48,16]))
         .onHit('Land', this.hitTest)//Land is the left and right borders
         .onHit('Player', this.stopMovement);
     },
@@ -71,14 +72,23 @@ Crafty.c('GameTickObject', {
 	init: function() {
 		this.requires('BaseObject')
 			.bind('gametick', function() {
-				//this.tween({x: this.x, y: this.y + Game.map_grid.tile.height}, Game.speed); //Slightly faster than game time to make sure everything is in place
-				this.y += Game.map_grid.tile.height;
+				this.tween({x: this.x, y: this.y + Game.map_grid.tile.height}, Game.speed); //Slightly faster than game time to make sure everything is in place
+				//this.y += Game.map_grid.tile.height;
 			})
+			.collision(new Crafty.polygon([31,34], [33,34]))
+			.onHit('Player', this.haveIHitAPlayer)
+			/*
 			.bind('hitcheck', function() {
 				this.haveIHitAPlayer(this, 'half');
 			});
+		*/
 	},
-    haveIHitAPlayer: function(object, time){//@Todo: Find a better place for this
+    haveIHitAPlayer: function(data){//@Todo: Find a better place for this
+        var player_id = Game.getPlayerEntityFromCollision(data);
+        this.hitPlayer(player_id);
+        this.destroy();
+        return;
+        
             if(object.__c.Collision){
                 var hitdata = object.hit('Player');
                 if(hitdata !== false){
@@ -99,6 +109,7 @@ Crafty.c('Island', {
   init: function() {
     this.requires('GameTickObject, Actor, island2')
         .color('rgb(211, 84, 0)')
+        
     },
     hitPlayer: function(player_id) {
         //-- Decreate health
