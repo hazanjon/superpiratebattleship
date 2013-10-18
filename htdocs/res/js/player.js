@@ -86,6 +86,7 @@ Player = function(player_id, player_name) {
         //-- Shoot
         if (dir == 5) {
             if (this.powerup == true) {
+                Game.webhook(player_id, 'cannon');
                 var x1 = Crafty.e('ShootRight').attr({x: this.object.x + Game.map_grid.tile.width, y: this.object.y + (Game.map_grid.tile.height/5)});
                 var x2 = Crafty.e('ShootLeft').attr({x: this.object.x - Game.map_grid.tile.width, y: this.object.y + (Game.map_grid.tile.height/5)});
                 this.givePowerup(false);

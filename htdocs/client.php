@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <head>
+    <meta name="viewport" content="width=device-width, user-scalable=false, initial-scale=1.0">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="http://js.pusher.com/2.1/pusher.min.js"></script>
+    <script src="http://connect.soundcloud.com/sdk.js"></script>
     <link href="/res/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="/res/css/css.css" rel="stylesheet" media="screen">
 </head>
-<body>
+<body class="client">
     <form method="GET">
     <?php
     include("definitions.php");
@@ -17,8 +19,9 @@
         if($game->exists($game_id)) {
             // check how many players in this game
             $number = $_GET['id'];
+            
             $player = false;
-            if(!empty($number)){
+            if($number){
                 $player = $game->getPlayer($number, $game_id);
             }
             
@@ -114,6 +117,40 @@
             console.log(num);
             privateChannel.trigger('client-ev', {id: user_id, button: num});
         }
+        
+        var actionSoundTrackIds = {
+            health: {track_id: 115921770, stream: false},
+            coin: {track_id: 115921776, stream: false},
+            powerup: {track_id: 115921677, stream: false},
+            cannon: {track_id: 115921782, stream: false}
+        }
+        
+        SC.initialize({
+          client_id: '332b52d99a4f6a843cdc4d92dc77d4d9'
+        });
+        
+        //preload sounds
+        for(var track in actionSoundTrackIds) {
+            if (actionSoundTrackIds.hasOwnProperty(track)) {
+                console.log(track);
+            }
+        }
+        
+        var playSound = function(type){
+            if (actionSoundTrackIds.hasOwnProperty(type)) {
+                SC.stream("/tracks/"+actionSoundTrackIds[type].track_id, {
+                    autoPlay  : true,
+                });
+            }
+        }
+        
+        privateChannel.bind("client-action", function(data) {
+            console.log(data.player_id, user_id);
+            console.log("Action: ", data);
+            if(data.player_id == user_id){
+                playSound(data.type);
+            }
+        });
     </script>
 </body>
 </html>

@@ -173,6 +173,7 @@ Game = {
     },
     
     webhook: function(player_id, type) {
+        Game.channel.trigger('client-action', {player_id: player_id, game_id: this.game_id, type: type});
         $.post('http://superpiratebattleship.com/webhook.php', {'game_id': this.game_id, 'player_id': player_id, 'type': type});
     },
     
