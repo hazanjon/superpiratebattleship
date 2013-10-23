@@ -23,6 +23,7 @@ Crafty.c('Land', {
   init: function() {
     this.requires('Grid, Color, Solid');
     this.color('rgba(46, 204, 113, 1)');
+    this.z = 1000;
   },
 });
 
@@ -37,11 +38,11 @@ Crafty.c('Garbage' , {
 
 Crafty.c('Player', {
     init: function() {
-        this.requires('Grid, Color, Keyboard, Collision, Actor, Tween, ship1')
-        .color('rgb(0, 67, 171)')
+        this.requires('Grid, Keyboard, Collision, Actor, Tween, ship1')
         .collision(new Crafty.polygon([16,16], [16,48], [48,48], [48,16]))
         .onHit('Land', this.hitTest)//Land is the left and right borders
         .onHit('Player', this.stopMovement);
+        this.z = 100;
     },
     hitTest: function(data) {
         //-- Stop movement if its on a LAND Object
@@ -60,8 +61,9 @@ Crafty.c('Player', {
 
 Crafty.c('BaseObject', {
 	init: function() {
-		this.requires('Grid, Color, Tween, Collision')
+		this.requires('Grid, Tween, Collision')
 			.onHit('Garbage', this.garbageCollector);
+        this.z = 50;
 	},
 	garbageCollector: function() {
 		this.destroy();
@@ -107,9 +109,7 @@ Crafty.c('GameTickObject', {
 //-- Islands
 Crafty.c('Island', {
   init: function() {
-    this.requires('GameTickObject, Actor, island2')
-        .color('rgb(211, 84, 0)')
-        
+    this.requires('GameTickObject, Actor, island2')        
     },
     hitPlayer: function(player_id) {
         //-- Decreate health
@@ -120,7 +120,6 @@ Crafty.c('Island', {
 Crafty.c('Health', {
   init: function() {
     this.requires('GameTickObject, Actor, heart')
-        .color('rgb(0, 67, 171)')
     },
     hitPlayer: function(player_id) {
         Game.webhook(player_id, 'health');
@@ -131,7 +130,6 @@ Crafty.c('Health', {
 Crafty.c('Coins', {
   init: function() {
     this.requires('GameTickObject, Actor, coin')
-        .color('rgb(0, 67, 171)')
     },
     hitPlayer: function(player_id) {
         Game.webhook(player_id, 'coin');
@@ -142,7 +140,6 @@ Crafty.c('Coins', {
 Crafty.c('Powerup', {
   init: function() {
     this.requires('GameTickObject, Actor, star')
-        .color('rgb(0, 67, 171)')
     },
     hitPlayer: function(player_id) {
         Game.webhook(player_id, 'powerup');
@@ -153,11 +150,11 @@ Crafty.c('Powerup', {
 Crafty.c('BaseCannonball', {
     init: function() {
         this.requires('BaseObject, Actor, cannonball')
-            .color('rgb(0, 67, 171')
             .attr({'h':31, 'w': 31})
             .onHit('Player', this.hitPlayer)
             .onHit('GameTickObject', this.hitObject)
             .unbind('TweenEnd');//This uses custom hit code, done use the inherited
+        this.z = 60;
     },
     hitPlayer: function(data) {
         var player_id = Game.getPlayerEntityFromCollision(data);
