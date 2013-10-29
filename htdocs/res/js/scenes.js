@@ -47,7 +47,7 @@ Crafty.scene("EndGame", function() {
 });
 
 Crafty.scene("Game", function() {
-    Crafty.background('rgb(0, 67, 171)');
+    Crafty.background("url('/res/img/sprite_water.png')");
     //-- Set Side of screen
     //-- Set everything in the leftmost and rightmost lanes as land
     for (var x = 0; x < Game.map_grid.width; x++) {
@@ -101,7 +101,7 @@ Crafty.scene("Menu", function() {
 });
 
 Crafty.scene("Loading", function() {
-    Crafty.background('rgb(0, 67, 171)');
+    Crafty.background("url('/res/img/sprite_water.png')");
     
     Crafty.e("2D, DOM, Text")
           .text("Loading....")
@@ -118,7 +118,7 @@ Crafty.scene("Loading", function() {
           });
     
     //-- Sprite Loading
-    Crafty.sprite(64, "/res/img/island1.png", { island1: [0, 0]});
+    Crafty.sprite(64, "/res/img/island1.gif", { island1: [0, 0]});
     Crafty.sprite(64, "/res/img/island2.png", { island2: [0, 0]});
     Crafty.sprite(64, "/res/img/island3.png", { island3: [0, 0]});
     Crafty.sprite(64, "/res/img/ship1.png", { ship1: [0, 0]});
