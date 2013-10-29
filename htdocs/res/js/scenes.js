@@ -118,7 +118,7 @@ Crafty.scene("Loading", function() {
           });
     
     //-- Sprite Loading
-    Crafty.sprite(64, "/res/img/island1.gif", { island1: [0, 0]});
+    Crafty.sprite(64, "/res/img/island1.png", { island1: [0, 0]});
     Crafty.sprite(64, "/res/img/island2.png", { island2: [0, 0]});
     Crafty.sprite(64, "/res/img/island3.png", { island3: [0, 0]});
     Crafty.sprite(64, "/res/img/ship1.png", { ship1: [0, 0]});
